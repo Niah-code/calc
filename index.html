@@ -1,12 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niah Shop - Facturación Profesional</title>
+    <style>
+        :root {
+            --nude: #F5E6D3;
+            --morado: #6A0DAD;
+            --morado-claro: #9B59B6;
+            --blanco: #ffffff;
+            --gris-suave: #f9f9f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--nude);
+            color: #333;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--blanco);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--morado);
+            font-family: 'serif';
+            margin: 0;
+            font-size: 32px;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-style: italic;
+            font-size: 14px;
+            color: var(--morado-claro);
+            margin: 5px 0;
+        }
+
+        .section-title {
+            background: var(--morado);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .producto-card {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            position: relative;
+            background: var(--gris-suave);
+        }
+
+        .btn-remove {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input:focus { border-color: var(--morado-claro); outline: none; }
+
+        .row { display: flex; gap: 10px; }
+
+        .btn-add {
+            background: var(--morado-claro);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .btn-add:hover { opacity: 0.9; }
+
+        .config-panel {
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .switch-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .btn-confirm {
+            background: var(--morado);
+            color: white;
+            font-size: 18px;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            margin-top: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #factura-final {
+            display: none;
+            width: 380px;
+            background: white;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .factura-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 15px 0;
+        }
+
+        .factura-tabla th {
+            border-bottom: 2px solid var(--morado);
+            padding: 8px 4px;
+            text-align: left;
+        }
+
+        .factura-tabla td {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 8px 4px;
+        }
+
+        .desglose-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin: 4px 0;
+        }
+
+        .total-box {
+            text-align: right;
+            border-top: 2px dashed #ccc;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        #btn-regresar {
+            margin-top: 20px;
+            padding: 10px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container, #btn-regresar { display: none !important; }
+            #factura-final { display: block !important; border: none; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="admin-view">
+    <header>
+        <h1>NIAH SHOP</h1>
+        <p>tus compras favoritas con nosotros</p>
+    </header>
+
+    <div class="section-title">DETALLES DEL PEDIDO</div>
+    
+    <div id="productos-lista"></div>
+    <button class="btn-add" onclick="agregarProducto()">+ Agregar Producto</button>
+
+    <div class="config-panel">
+        <label style="font-size: 12px; font-weight: bold;">Tasa del día (Bs):</label>
+        <input type="number" id="tasa" step="0.01">
+        
+        <div class="switch-container">
+            <span>¿Aplicar Comisión?</span>
+            <input type="checkbox" id="check-comision" style="width: 20px;" checked>
+        </div>
+        
+        <div class="switch-container">
+            <span>¿Descuento 10% (1ra compra)?</span>
+            <input type="checkbox" id="check-descuento" style="width: 20px;">
+        </div>
+    </div>
+
+    <div class="section-title">DATOS DEL CLIENTE</div>
+    <input type="text" id="c-nombre" placeholder="Nombre">
+    <input type="text" id="c-apellido" placeholder="Apellido">
+    <input type="text" id="c-referencia" placeholder="Referencia de Pago (Ej: Pago Móvil 123)">
+    
+    <button class="btn-confirm" onclick="generarFactura()">GENERAR FACTURA</button>
+</div>
+
+<div id="factura-final">
+    <center>
+        <h2 style="color:var(--morado); margin:0;">NIAH SHOP</h2>
+        <small>tus compras favoritas con nosotros</small>
+    </center>
+    <br>
+    <div style="font-size:12px; line-height: 1.6;">
+        <strong>Cliente:</strong> <span id="f-cliente"></span><br>
+        <strong>Referencia:</strong> <span id="f-ref"></span><br>
+        <strong>Fecha:</strong> <span id="f-fecha"></span>
+    </div>
+
+    <table class="factura-tabla">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cant.</th>
+                <th>P.Unit</th>
+                <th>Envío</th>
+                <th>Subt.</th>
+            </tr>
+        </thead>
+        <tbody id="f-items"></tbody>
+    </table>
+
+    <div id="desglose-area">
+        <div class="desglose-line"><span>Monto Productos:</span> <span id="d-prod"></span></div>
+        <div class="desglose-line"><span>Monto Envío:</span> <span id="d-envio"></span></div>
+        <div class="desglose-line" id="row-comision"><span>Comisión:</span> <span id="d-comision"></span></div>
+        <div class="desglose-line" id="row-descuento" style="color: green; font-weight: bold; display:none;">
+            <span>Descuento (10%):</span> <span id="d-descuento"></span>
+        </div>
+    </div>
+
+    <div class="total-box">
+        <h3 style="margin:5px 0; font-size: 20px;">TOTAL: <span id="total-usd"></span> USD</h3>
+        <h2 style="margin:0; color:var(--morado); font-size: 24px;"> <span id="total-bs"></span> Bs</h2>
+        <small>Tasa: <span id="f-tasa"></span> Bs</small>
+    </div>
+    <center><p style="font-size:11px; margin-top:25px; border-top: 1px solid #eee; padding-top: 10px;">¡Gracias por preferirnos! 💜</p></center>
+</div>
+
+<button id="btn-regresar" onclick="regresar()">⬅ Editar Pedido</button>
+
 <script>
     let productosCount = 0;
     const inputTasa = document.getElementById('tasa');
 
-    // --- MEMORIA PARA LA TASA ---
     window.onload = function() {
         const guardada = localStorage.getItem('tasaNiah');
-        // Actualizado a 633 por defecto según tu tasa Binance
-        inputTasa.value = guardada ? guardada : 633; 
+        inputTasa.value = guardada ? guardada : 530; 
         agregarProducto();
     };
 
@@ -43,8 +327,7 @@
         const aplicarComision = document.getElementById('check-comision').checked;
         const aplicarDescuento = document.getElementById('check-descuento').checked;
         
-        let sumaProductosOriginal = 0;
-        let sumaProductosConDescuento = 0;
+        let sumaProductosBase = 0;
         let sumaEnvios = 0;
         let itemsHTML = '';
 
@@ -55,64 +338,58 @@
             const nombre = card.querySelector('.p-nombre').value || "Producto";
             const desc = card.querySelector('.p-desc').value;
             const cant = parseFloat(card.querySelector('.p-cant').value) || 0;
-            const precioBase = parseFloat(card.querySelector('.p-precio').value) || 0;
+            const precio = parseFloat(card.querySelector('.p-precio').value) || 0;
             const envio = parseFloat(card.querySelector('.p-envio').value) || 0;
 
-            // Lógica corregida: El descuento del 10% va directo al precio del producto
-            let precioUnitarioFactura = precioBase;
-            if(aplicarDescuento) {
-                precioUnitarioFactura = precioBase * 0.90;
-            }
-
-            const subtotalItem = (precioUnitarioFactura * cant);
-            sumaProductosConDescuento += subtotalItem;
-            sumaProductosOriginal += (precioBase * cant);
+            const subtotalItem = (precio * cant);
+            sumaProductosBase += subtotalItem;
             sumaEnvios += envio;
 
             itemsHTML += `
                 <tr>
                     <td><strong>${nombre}</strong><br><small>${desc}</small></td>
                     <td>${cant}</td>
-                    <td>$${precioUnitarioFactura.toFixed(2)}</td>
+                    <td>$${precio.toFixed(2)}</td>
                     <td>$${envio.toFixed(2)}</td>
                     <td>$${(subtotalItem + envio).toFixed(2)}</td>
                 </tr>
             `;
         });
 
-        // Comisión del 29% (Interna pero con etiqueta "Comisión")
-        const montoComision = aplicarComision ? (sumaProductosOriginal * 0.29) : 0;
+        // 1. Descuento solo sobre el total de la bolsa de productos
+        let montoDescuento = aplicarDescuento ? (sumaProductosBase * 0.10) : 0;
+        let totalProductosFinal = sumaProductosBase - montoDescuento;
         
-        // Suma Total Cruda
-        let totalCrudo = sumaProductosConDescuento + sumaEnvios + montoComision;
+        // 2. Comisión del 29% sobre el monto base
+        let montoComision = aplicarComision ? (sumaProductosBase * 0.29) : 0;
 
-        // REDONDEO A TU FAVOR: Sube al siguiente 0.05
-        // Ejemplo: Si da 12.11 -> Sube a 12.15
+        // 3. Total en USD y REDONDEO A FAVOR (Siguiente 0.05)
+        let totalCrudo = totalProductosFinal + sumaEnvios + montoComision;
         let totalUSD = Math.ceil(totalCrudo * 20) / 20;
 
-        // Llenar Datos del Cliente
+        // --- LLENAR FACTURA ---
         document.getElementById('f-cliente').innerText = `${document.getElementById('c-nombre').value} ${document.getElementById('c-apellido').value}`;
         document.getElementById('f-ref').innerText = document.getElementById('c-referencia').value || "N/A";
         document.getElementById('f-fecha').innerText = new Date().toLocaleDateString();
         document.getElementById('f-items').innerHTML = itemsHTML;
         
-        // Llenar Desglose (Visualización para el cliente)
-        document.getElementById('d-prod').innerText = `$${sumaProductosConDescuento.toFixed(2)}`;
+        document.getElementById('d-prod').innerText = `$${sumaProductosBase.toFixed(2)}`;
         document.getElementById('d-envio').innerText = `$${sumaEnvios.toFixed(2)}`;
         document.getElementById('d-comision').innerText = `$${montoComision.toFixed(2)}`;
         document.getElementById('row-comision').style.display = aplicarComision ? 'flex' : 'none';
 
-        // Ocultamos la fila de descuento porque ya va restado en el precio del producto
-        // para que la suma cuadre perfecto visualmente
-        document.getElementById('row-descuento').style.display = 'none';
+        if(aplicarDescuento) {
+            document.getElementById('row-descuento').style.display = 'flex';
+            document.getElementById('d-descuento').innerText = `-$${montoDescuento.toFixed(2)}`;
+        } else {
+            document.getElementById('row-descuento').style.display = 'none';
+        }
 
+        // --- CÁLCULO DE BS (TAL CUAL COMO LO TENÍAS) ---
         document.getElementById('f-tasa').innerText = tasa;
         document.getElementById('total-usd').innerText = totalUSD.toFixed(2);
-        
-        // Total en Bolívares con tu Tasa Binance
         document.getElementById('total-bs').innerText = (totalUSD * tasa).toLocaleString('es-VE', {minimumFractionDigits: 2});
 
-        // Cambiar Vistas
         document.getElementById('admin-view').style.display = 'none';
         document.getElementById('factura-final').style.display = 'block';
         document.getElementById('btn-regresar').style.display = 'block';
@@ -126,3 +403,6 @@
         document.getElementById('btn-regresar').style.display = 'none';
     }
 </script>
+
+</body>
+</html>
