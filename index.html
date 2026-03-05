@@ -220,10 +220,10 @@
 
     <div class="config-panel">
         <label style="font-size: 12px; font-weight: bold;">Tasa del día (Bs):</label>
-        <input type="number" id="tasa" value="530" step="0.01">
+        <input type="number" id="tasa" step="0.01">
         
         <div class="switch-container">
-            <span>¿Aplicar Comisión 29%?</span>
+            <span>¿Aplicar Comisión?</span>
             <input type="checkbox" id="check-comision" style="width: 20px;" checked>
         </div>
         
@@ -269,7 +269,7 @@
     <div id="desglose-area">
         <div class="desglose-line"><span>Monto Productos:</span> <span id="d-prod"></span></div>
         <div class="desglose-line"><span>Monto Envío:</span> <span id="d-envio"></span></div>
-        <div class="desglose-line" id="row-comision"><span>Comisión (29%):</span> <span id="d-comision"></span></div>
+        <div class="desglose-line" id="row-comision"><span>Comisión:</span> <span id="d-comision"></span></div>
         <div class="desglose-line" id="row-descuento" style="color: green; font-weight: bold; display:none;">
             <span>Descuento (10%):</span> <span id="d-descuento"></span>
         </div>
@@ -287,6 +287,18 @@
 
 <script>
     let productosCount = 0;
+    const inputTasa = document.getElementById('tasa');
+
+    // --- MEMORIA PARA LA TASA ---
+    window.onload = function() {
+        const guardada = localStorage.getItem('tasaNiah');
+        inputTasa.value = guardada ? guardada : 530; // 530 por defecto
+        agregarProducto();
+    };
+
+    inputTasa.addEventListener('input', () => {
+        localStorage.setItem('tasaNiah', inputTasa.value);
+    });
 
     function agregarProducto() {
         productosCount++;
@@ -313,7 +325,7 @@
     }
 
     function generarFactura() {
-        const tasa = parseFloat(document.getElementById('tasa').value) || 0;
+        const tasa = parseFloat(inputTasa.value) || 0;
         const aplicarComision = document.getElementById('check-comision').checked;
         const aplicarDescuento = document.getElementById('check-descuento').checked;
         
@@ -388,8 +400,6 @@
         document.getElementById('factura-final').style.display = 'none';
         document.getElementById('btn-regresar').style.display = 'none';
     }
-
-    agregarProducto();
 </script>
 
 </body>
