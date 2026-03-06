@@ -3,250 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niah Shop - Facturación Profesional</title>
+    <title>Niah Shop - Calculadora Oficial</title>
     <style>
-        :root {
-            --nude: #F5E6D3;
-            --morado: #6A0DAD;
-            --morado-claro: #9B59B6;
-            --blanco: #ffffff;
-            --gris-suave: #f9f9f9;
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--nude);
-            color: #333;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background: var(--blanco);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        header h1 {
-            color: var(--morado);
-            font-family: 'serif';
-            margin: 0;
-            font-size: 32px;
-            letter-spacing: 2px;
-        }
-
-        header p {
-            font-style: italic;
-            font-size: 14px;
-            color: var(--morado-claro);
-            margin: 5px 0;
-        }
-
-        .section-title {
-            background: var(--morado);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            margin: 20px 0 10px 0;
-            text-align: center;
-            text-transform: uppercase;
-        }
-
-        .producto-card {
-            border: 1px solid #eee;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            position: relative;
-            background: var(--gris-suave);
-        }
-
-        .btn-remove {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 14px;
-            transition: border 0.3s;
-        }
-
-        input:focus { border-color: var(--morado-claro); outline: none; }
-
+        :root { --nude: #F5E6D3; --morado: #6A0DAD; --morado-claro: #9B59B6; --blanco: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--nude); padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 480px; background: var(--blanco); padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { color: var(--morado); margin: 0; letter-spacing: 2px; }
+        .section-title { background: var(--morado); color: white; padding: 10px; border-radius: 8px; font-size: 14px; margin: 20px 0 10px; text-align: center; font-weight: bold; }
+        .producto-card { border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative; background: #f9f9f9; }
+        .btn-remove { position: absolute; top: -10px; right: -10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         .row { display: flex; gap: 10px; }
-
-        .btn-add {
-            background: var(--morado-claro);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            width: 100%;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-
-        .btn-add:hover { opacity: 0.9; }
-
-        .config-panel {
-            background: #f1f1f1;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 15px;
-        }
-
-        .switch-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 8px 0;
-            font-size: 14px;
-        }
-
-        .btn-confirm {
-            background: var(--morado);
-            color: white;
-            font-size: 18px;
-            padding: 18px;
-            border: none;
-            border-radius: 12px;
-            width: 100%;
-            margin-top: 25px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        #factura-final {
-            display: none;
-            width: 380px;
-            background: white;
-            padding: 30px;
-            border: 1px solid #eee;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        }
-
-        .factura-tabla {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            margin: 15px 0;
-        }
-
-        .factura-tabla th {
-            border-bottom: 2px solid var(--morado);
-            padding: 8px 4px;
-            text-align: left;
-        }
-
-        .factura-tabla td {
-            border-bottom: 1px solid #f0f0f0;
-            padding: 8px 4px;
-        }
-
-        .desglose-line {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin: 4px 0;
-        }
-
-        .total-box {
-            text-align: right;
-            border-top: 2px dashed #ccc;
-            padding-top: 15px;
-            margin-top: 10px;
-        }
-
-        #btn-regresar {
-            margin-top: 20px;
-            padding: 10px;
-            background: #666;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            display: none;
-        }
-
-        @media print {
-            body { background: white; padding: 0; }
-            .container, #btn-regresar { display: none !important; }
-            #factura-final { display: block !important; border: none; width: 100%; }
+        .btn-add { background: var(--morado-claro); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .config-panel { background: #f1f1f1; padding: 15px; border-radius: 12px; margin-top: 15px; }
+        .switch-container { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; font-size: 14px; font-weight: bold; }
+        .btn-confirm { background: var(--morado); color: white; font-size: 18px; padding: 18px; border: none; border-radius: 12px; width: 100%; margin-top: 25px; cursor: pointer; font-weight: bold; }
+        
+        /* Factura Estilo */
+        #factura-final { display: none; width: 380px; background: white; padding: 30px; border: 1px solid #eee; }
+        .factura-tabla { width: 100%; border-collapse: collapse; font-size: 13px; margin: 15px 0; }
+        .factura-tabla th { border-bottom: 2px solid var(--morado); padding: 8px 0; text-align: left; }
+        .factura-tabla td { border-bottom: 1px solid #f0f0f0; padding: 8px 0; }
+        .desglose-line { display: flex; justify-content: space-between; font-size: 13px; margin: 4px 0; }
+        .total-box { text-align: right; border-top: 2px dashed #ccc; padding-top: 15px; margin-top: 10px; }
+        #btn-regresar { margin-top: 20px; padding: 10px; background: #666; color: white; border: none; border-radius: 5px; display: none; cursor: pointer; }
+        
+        @media print { 
+            body { background: white; }
+            .container, #btn-regresar { display: none !important; } 
+            #factura-final { display: block !important; border: none; width: 100%; box-shadow: none; } 
         }
     </style>
 </head>
 <body>
 
 <div class="container" id="admin-view">
-    <header>
-        <h1>NIAH SHOP</h1>
-        <p>tus compras favoritas con nosotros</p>
-    </header>
-
-    <div class="section-title">DETALLES DEL PEDIDO</div>
+    <header><h1>NIAH SHOP</h1><p>tus compras favoritas con nosotros</p></header>
     
+    <div class="section-title">PRODUCTOS</div>
     <div id="productos-lista"></div>
     <button class="btn-add" onclick="agregarProducto()">+ Agregar Producto</button>
 
     <div class="config-panel">
-        <label style="font-size: 12px; font-weight: bold;">Tasa del día (Bs):</label>
+        <label>Tasa del día (Bs):</label>
         <input type="number" id="tasa" step="0.01">
         
         <div class="switch-container">
-            <span>¿Aplicar Comisión?</span>
-            <input type="checkbox" id="check-comision" style="width: 20px;" checked>
+            <span>Comisión de Gestión (25%)</span>
+            <input type="checkbox" id="check-comision" style="width:20px" checked>
         </div>
         
         <div class="switch-container">
-            <span>¿Descuento 10% (1ra compra)?</span>
-            <input type="checkbox" id="check-descuento" style="width: 20px;">
+            <span>Descuento 1ra compra (10% Prod)</span>
+            <input type="checkbox" id="check-descuento" style="width:20px">
         </div>
     </div>
 
     <div class="section-title">DATOS DEL CLIENTE</div>
-    <input type="text" id="c-nombre" placeholder="Nombre">
-    <input type="text" id="c-apellido" placeholder="Apellido">
-    <input type="text" id="c-referencia" placeholder="Referencia de Pago (Ej: Pago Móvil 123)">
+    <input type="text" id="c-nombre" placeholder="Nombre del Cliente">
+    <input type="text" id="c-referencia" placeholder="Referencia de Pago">
     
     <button class="btn-confirm" onclick="generarFactura()">GENERAR FACTURA</button>
 </div>
 
 <div id="factura-final">
-    <center>
-        <h2 style="color:var(--morado); margin:0;">NIAH SHOP</h2>
-        <small>tus compras favoritas con nosotros</small>
-    </center>
+    <center><h2 style="color:var(--morado);margin:0">NIAH SHOP</h2><small>tus compras favoritas con nosotros</small></center>
     <br>
-    <div style="font-size:12px; line-height: 1.6;">
+    <div style="font-size:12px">
         <strong>Cliente:</strong> <span id="f-cliente"></span><br>
         <strong>Referencia:</strong> <span id="f-ref"></span><br>
         <strong>Fecha:</strong> <span id="f-fecha"></span>
@@ -257,29 +81,26 @@
             <tr>
                 <th>Producto</th>
                 <th>Cant.</th>
-                <th>P.Unit</th>
-                <th>Envío</th>
-                <th>Subt.</th>
+                <th>Total Item</th>
             </tr>
         </thead>
         <tbody id="f-items"></tbody>
     </table>
 
     <div id="desglose-area">
-        <div class="desglose-line"><span>Monto Productos:</span> <span id="d-prod"></span></div>
-        <div class="desglose-line"><span>Monto Envío:</span> <span id="d-envio"></span></div>
-        <div class="desglose-line" id="row-comision"><span>Comisión:</span> <span id="d-comision"></span></div>
-        <div class="desglose-line" id="row-descuento" style="color: green; font-weight: bold; display:none;">
-            <span>Descuento (10%):</span> <span id="d-descuento"></span>
+        <div class="desglose-line"><span>Monto Neto (Prod + Envío):</span> <span id="d-neto"></span></div>
+        <div class="desglose-line" id="row-comision"><span>Comisión Gestión (25%):</span> <span id="d-comision"></span></div>
+        <div class="desglose-line" id="row-descuento" style="color:green; display:none; font-weight:bold;">
+            <span>Descuento (10% s/Prod):</span> <span id="d-descuento"></span>
         </div>
     </div>
 
     <div class="total-box">
         <h3 style="margin:5px 0; font-size: 20px;">TOTAL: <span id="total-usd"></span> USD</h3>
         <h2 style="margin:0; color:var(--morado); font-size: 24px;"> <span id="total-bs"></span> Bs</h2>
-        <small>Tasa: <span id="f-tasa"></span> Bs</small>
+        <small>Tasa del día: <span id="f-tasa"></span> Bs</small>
     </div>
-    <center><p style="font-size:11px; margin-top:25px; border-top: 1px solid #eee; padding-top: 10px;">¡Gracias por preferirnos! 💜</p></center>
+    <center><p style="font-size:11px; margin-top:25px; border-top: 1px solid #eee; padding-top: 10px;">¡Gracias por tu compra! 💜</p></center>
 </div>
 
 <button id="btn-regresar" onclick="regresar()">⬅ Editar Pedido</button>
@@ -288,15 +109,12 @@
     let productosCount = 0;
     const inputTasa = document.getElementById('tasa');
 
-    window.onload = function() {
-        const guardada = localStorage.getItem('tasaNiah');
-        inputTasa.value = guardada ? guardada : 530; 
-        agregarProducto();
+    window.onload = () => { 
+        inputTasa.value = localStorage.getItem('tasaNiah') || 60; 
+        agregarProducto(); 
     };
 
-    inputTasa.addEventListener('input', () => {
-        localStorage.setItem('tasaNiah', inputTasa.value);
-    });
+    inputTasa.addEventListener('input', () => localStorage.setItem('tasaNiah', inputTasa.value));
 
     function agregarProducto() {
         productosCount++;
@@ -304,22 +122,14 @@
         div.className = 'producto-card';
         div.id = `prod-${productosCount}`;
         div.innerHTML = `
-            <button class="btn-remove" onclick="eliminarProducto(${productosCount})">✕</button>
+            <button class="btn-remove" onclick="document.getElementById('prod-${productosCount}').remove()">✕</button>
             <input type="text" class="p-nombre" placeholder="Nombre del Producto">
-            <textarea class="p-desc" rows="2" placeholder="Talla, Color o Detalles"></textarea>
             <div class="row">
-                <input type="number" class="p-cant" placeholder="Cant" value="1" min="1">
-                <input type="number" class="p-precio" placeholder="Precio $" step="0.01">
-                <input type="number" class="p-envio" placeholder="Envío $" step="0.01">
-            </div>
-        `;
+                <input type="number" class="p-cant" placeholder="Cant" value="1">
+                <input type="number" class="p-precio" placeholder="Precio $">
+                <input type="number" class="p-envio" placeholder="Envío $">
+            </div>`;
         document.getElementById('productos-lista').appendChild(div);
-    }
-
-    function eliminarProducto(id) {
-        if(document.querySelectorAll('.producto-card').length > 1) {
-            document.getElementById(`prod-${id}`).remove();
-        }
     }
 
     function generarFactura() {
@@ -327,73 +137,54 @@
         const aplicarComision = document.getElementById('check-comision').checked;
         const aplicarDescuento = document.getElementById('check-descuento').checked;
         
-        let sumaProductosBase = 0;
-        let sumaEnvios = 0;
-        let sumaComisionesTotal = 0;
+        let sumaProdBase = 0;
+        let sumaEnvioBase = 0;
+        let sumaComisionTotal = 0;
         let itemsHTML = '';
 
-        const cards = document.querySelectorAll('.producto-card');
-        if(cards.length === 0) return alert("Agrega al menos un producto");
+        document.querySelectorAll('.producto-card').forEach(card => {
+            const n = card.querySelector('.p-nombre').value || "Producto";
+            const c = parseFloat(card.querySelector('.p-cant').value) || 0;
+            const p = parseFloat(card.querySelector('.p-precio').value) || 0;
+            const e = parseFloat(card.querySelector('.p-envio').value) || 0;
 
-        cards.forEach(card => {
-            const nombre = card.querySelector('.p-nombre').value || "Producto";
-            const desc = card.querySelector('.p-desc').value;
-            const cant = parseFloat(card.querySelector('.p-cant').value) || 0;
-            const precioBase = parseFloat(card.querySelector('.p-precio').value) || 0;
-            const envio = parseFloat(card.querySelector('.p-envio').value) || 0;
-
-            // 1. La comisión (29%) se saca del precio unitario original
-            const comisionPorEsteProducto = aplicarComision ? (precioBase * cant * 0.29) : 0;
+            const baseFila = (p * c) + e;
+            const comisionFila = aplicarComision ? (baseFila * 0.25) : 0; // NUEVO 25%
             
-            sumaProductosBase += (precioBase * cant);
-            sumaEnvios += envio;
-            sumaComisionesTotal += comisionPorEsteProducto;
+            sumaProdBase += (p * c);
+            sumaEnvioBase += e;
+            sumaComisionTotal += comisionFila;
 
-            // En la tabla, mostramos el subtotal del ítem YA con su comisión sumada
-            const subtotalFilaConComision = (precioBase * cant) + envio + comisionPorEsteProducto;
-
-            itemsHTML += `
-                <tr>
-                    <td><strong>${nombre}</strong><br><small>${desc}</small></td>
-                    <td>${cant}</td>
-                    <td>$${precioBase.toFixed(2)}</td>
-                    <td>$${envio.toFixed(2)}</td>
-                    <td>$${subtotalFilaConComision.toFixed(2)}</td>
-                </tr>
-            `;
+            itemsHTML += `<tr>
+                <td>${n}</td>
+                <td>${c}</td>
+                <td>$${(baseFila + comisionFila).toFixed(2)}</td>
+            </tr>`;
         });
 
-        // 2. Descuento del 10% se calcula SOBRE EL MONTO TOTAL DE PRODUCTOS BASE
-        let montoDescuento = aplicarDescuento ? (sumaProductosBase * 0.10) : 0;
+        let desc = aplicarDescuento ? (sumaProdBase * 0.10) : 0;
+        let totalCrudo = (sumaProdBase + sumaEnvioBase + sumaComisionTotal) - desc;
         
-        // 3. Total Final: (Productos - Descuento) + Envíos + Comisión
-        // El descuento no afecta a la comisión ni al envío.
-        let totalCrudo = (sumaProductosBase - montoDescuento) + sumaEnvios + sumaComisionesTotal;
-        
-        // 4. Redondeo Pro-Ganancia ($0.05)
+        // Redondeo Pro-Niah al 0.05 superior
         let totalUSD = Math.ceil(totalCrudo * 20) / 20;
 
-        // Llenar Datos Visuales
-        document.getElementById('f-cliente').innerText = `${document.getElementById('c-nombre').value} ${document.getElementById('c-apellido').value}`;
+        document.getElementById('f-cliente').innerText = document.getElementById('c-nombre').value || "Cliente General";
         document.getElementById('f-ref').innerText = document.getElementById('c-referencia').value || "N/A";
         document.getElementById('f-fecha').innerText = new Date().toLocaleDateString();
         document.getElementById('f-items').innerHTML = itemsHTML;
         
-        document.getElementById('d-prod').innerText = `$${sumaProductosBase.toFixed(2)}`;
-        document.getElementById('d-envio').innerText = `$${sumaEnvios.toFixed(2)}`;
-        document.getElementById('d-comision').innerText = `$${sumaComisionesTotal.toFixed(2)}`;
+        document.getElementById('d-neto').innerText = `$${(sumaProdBase + sumaEnvioBase).toFixed(2)}`;
+        document.getElementById('d-comision').innerText = `$${sumaComisionTotal.toFixed(2)}`;
         document.getElementById('row-comision').style.display = aplicarComision ? 'flex' : 'none';
-
+        
         if(aplicarDescuento) {
             document.getElementById('row-descuento').style.display = 'flex';
-            document.getElementById('d-descuento').innerText = `-$${montoDescuento.toFixed(2)}`;
+            document.getElementById('d-descuento').innerText = `-$${desc.toFixed(2)}`;
         } else {
             document.getElementById('row-descuento').style.display = 'none';
         }
 
         document.getElementById('total-usd').innerText = totalUSD.toFixed(2);
-        
-        // El monto en Bs se saca multiplicando el Total USD final por la tasa que pongas
         document.getElementById('f-tasa').innerText = tasa;
         document.getElementById('total-bs').innerText = (totalUSD * tasa).toLocaleString('es-VE', {minimumFractionDigits: 2});
 
@@ -410,6 +201,5 @@
         document.getElementById('btn-regresar').style.display = 'none';
     }
 </script>
-
 </body>
 </html>
