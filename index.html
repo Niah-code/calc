@@ -342,9 +342,9 @@
             const precioBase = parseFloat(card.querySelector('.p-precio').value) || 0;
             const envio = parseFloat(card.querySelector('.p-envio').value) || 0;
 
-            // NUEVA LÓGICA: 25% sobre (Producto * Cantidad + Envío)
+            // LÓGICA ACTUALIZADA: 19% sobre (Producto * Cantidad + Envío)
             const costoNetoItem = (precioBase * cant) + envio;
-            const comisionEsteItem = aplicarComision ? (costoNetoItem * 0.25) : 0;
+            const comisionEsteItem = aplicarComision ? (costoNetoItem * 0.19) : 0;
             
             sumaProductosBase += (precioBase * cant);
             sumaEnvios += envio;
